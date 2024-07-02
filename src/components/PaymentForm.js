@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const PaymentForm = () => {
+    const navigate=useNavigate();
     const [formData, setFormData] = useState({
-        userId: '',
+        userEmail: '',
         paymentReference: ''
     });
 
@@ -15,7 +17,21 @@ const PaymentForm = () => {
     };
 
     const handleSubmit = async (e) => {
-        alert('Data Submitted Successfully');
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:4000/submitPaymentForm', formData);
+            alert(response.data.message);
+            alert('Your wallet balance will be updated shortly'); // Alert success message
+            // Optionally, clear the form after successful submission
+            setFormData({
+                userId: '',
+                paymentReference: ''
+            });
+            navigate('/');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Failed to submit form. Please try again.'); // Alert error message
+        }
     };
 
     return (
@@ -24,11 +40,11 @@ const PaymentForm = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>
-                        User ID:
+                        User Email:
                         <input
                             type="text"
-                            name="userId"
-                            value={formData.userId}
+                            name="userEmail"
+                            value={formData.userEmail}
                             onChange={handleChange}
                             required
                         />

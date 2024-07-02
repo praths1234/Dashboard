@@ -4,7 +4,7 @@ import axios from 'axios';
 const Wallet = () => {
     // Mock data for user's wallet balance
     const [walletBalance, setWalletBalance] = useState(); 
-    const [qrCodeData, setQrCodeData] = useState('');
+    //const [qrCodeData, setQrCodeData] = useState('');
     const navigate = useNavigate();
     const userId = JSON.parse(localStorage.getItem('user')).data._id;
     useEffect(() => {
@@ -12,7 +12,8 @@ const Wallet = () => {
         const fetchWalletBalance = async () => {
             try {
                 const response = await axios.get(`http://localhost:4000/wallet/${userId}`);
-                setWalletBalance(response.data.balance);
+                console.log(response.data);
+                setWalletBalance(response.data.walletBalance);
                 console.log(walletBalance);
             } catch (error) {
                 console.error('Error fetching wallet balance:', error);
@@ -20,7 +21,7 @@ const Wallet = () => {
         };
 
         fetchWalletBalance();
-    }, [userId]);
+    }, [userId , walletBalance]);
     const handlePaymentDone = () => {
         navigate('/payment-form');
     };
@@ -29,7 +30,7 @@ const Wallet = () => {
         <div>
             <h3>User Wallet</h3>
             <div style={{ marginBottom: '20px' }}>
-                <p><strong>Wallet Balance:</strong> ${walletBalance}</p>
+                <p><strong>Wallet Balance:</strong> ₹{walletBalance}</p>
             </div>
             <h3>Scan this QR Code:</h3>
             <div>
@@ -39,12 +40,7 @@ const Wallet = () => {
                     style={{ width: '200px', height: '200px' }} 
                 />
             </div>
-            {qrCodeData && (
-                <div>
-                    <h4>QR Code Data:</h4>
-                    <p>{qrCodeData}</p>
-                </div>
-            )}
+            
             
             <button onClick={handlePaymentDone} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>
                 Payment Done
